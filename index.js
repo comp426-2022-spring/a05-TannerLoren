@@ -1,71 +1,53 @@
 // Place your server entry point code here
-const args = require('minimist')(process.argv.slice(2))
-args['port']
-const port = args['port'] || process.env.PORT || 5000
+const args = require("minimist")(process.argv.slice(2))
+args['port', 'debug', 'log', 'help'];
+var port = args.port || process.env.PORT || 5555
 
-var express = require('express');
-var app = express()
-
+// Importing general config
+const config = require("./src/config/general.config.js")
+const routes = require("./src/routes/someroutes.js")
+const midWare = require("./src/middleware/mymiddleware.js")
+const express = config.express
+const db = config.db
+const app = config.app
 app.use(express.static('./public'));
 
+
+//Using express to get body field trhough URL or json
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-if (args['help']) {
-    console.log(`index.js [options]
-    --port, -p	Set the port number for the server to listen on. Must be an integer
-    between 1 and 65535. Defaults to 5000.
 
-    --debug, -d If set to true, creates endlpoints /app/log/access/ which returns
-    a JSON access log from the database and /app/error which throws 
-    an error with the message "Error test successful." Defaults to 
-    false.
+// If --help or -h, echo help text to STDOUT and exit
+midWare.helpScript(args)
 
-    --log, -l   If set to false, no log files are written. Defaults to true.
-    Logs are always written to database.
+const server = app.listen(port, () =>{
+    console.log('App is running on port %PORT%'.replace('%PORT%', port))
+})
 
-    --help, -h	Return this message and exit.`)
-    process.exit(0)
-}
+//MIDDLEWARE
+midWare.debugScript(args, db, app)
 
-const server = app.listen(port, () => { 
-    console.log('App listening on port %PORT%'.replace('%PORT%',port))
-});
+midWare.logScript(args, app)
 
-app.use(require('./src/middleware/mymiddleware.js'))
+app.use(midWare.intData)
+//MIDDLEWARE
 
-app.use(require('./src/routes/someroutes.js'))
 
-app.get('/app/', (req, res) => { // Define Checkpoint
-    // Respond with status 200
-    res.statusCode = 200;
-    // Respond with status message "OK"
-    res.json({
-        'message': "Your API works! (200)"
-    })
-});
+app.get(routes.root)
 
-if (args['log'] == true) {
-    const fs = require('fs');
+app.get(routes.oneFlip)
 
-    const WRITESTREAM = fs.createWriteStream('access.log', { flags: 'a' });
-    // Set up the access logging middleware
-    app.use(morgan('accesslog', { stream: WRITESTREAM }));
-}
+app.get(routes.manyFlips)
 
-if (args['debug'] == true) {
-    // Endpoint to return all records in accesslog
-    app.get('/app/log/access', (req, res) => {
-        const stmt = db.prepare('SELECT * FROM accesslog').all()
-        res.statusCode = 200;
-        res.json(stmt);
-    });
 
-    app.get('/app/error', (req, res) => {
-        throw new Error('Error test successful.')
-    });
-}
+app.get(routes.headGuess)
+
+app.post(routes.bodyCoin)
+
+app.post(routes.bodyFlips)
+
 app.use(function(req, res){
-    // Default response for any other request
-    res.status(404).send('404 NOT FOUND')
-});
+  res.type('text/plain')
+  res.status(404).send("Endpoint does not exist")
+})
