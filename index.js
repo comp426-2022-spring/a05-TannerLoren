@@ -23,3 +23,7 @@ if (args['help']) {
 
     --log, -l   If set to false, no log files are written. Defaults to true.
     Logs are always written to database.
+
+    --help, -h	Return this message and exit.`)
+    process.exit(0)
+}
