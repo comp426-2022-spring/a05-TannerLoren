@@ -44,3 +44,6 @@ app.get('/app/', (req, res) => { // Define Checkpoint
         'message': "Your API works! (200)"
     })
 });
+
+if (args['log'] == true) {
+    const fs = require('fs');
