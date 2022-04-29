@@ -27,3 +27,7 @@ if (args['help']) {
     --help, -h	Return this message and exit.`)
     process.exit(0)
 }
+
+const server = app.listen(port, () => { 
+    console.log('App listening on port %PORT%'.replace('%PORT%',port))
+});
