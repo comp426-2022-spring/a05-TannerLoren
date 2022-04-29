@@ -67,3 +67,15 @@ function flipCoins() {
         })
 }
 // Guess a flip by clicking either heads or tails button
+function guessTails() {
+    fetch('http://localhost:5000/app/flip/call/tails')
+        .then((response) => {
+            return response.json();
+        })
+        .then((result) => {
+            console.log(result);
+            document.getElementById("image2").setAttribute("src", "assets/img/" + result.flip + ".png");
+            document.getElementById("result").innerHTML = "You " + result.result;
+        })
+}
+
