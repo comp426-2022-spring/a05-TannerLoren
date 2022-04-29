@@ -3,14 +3,36 @@ const Database = require('better-sqlite3')
 
 const db = new Database('log.db')
 
-const query = db.prepare(`SELECT name FROM sqlite_master WHERE type='table' and name='accesslog';`)
-
-if (query.get() == undefined) {
+const stmt = logdb.prepare(`
+    SELECT name FROM sqlite_master WHERE type='table' and name='accesslog';`
+    );
+// Define row using `get()` from better-sqlite3
+let row = stmt.get();
+// Check if there is a table. If row is undefined then no table exists.
+if (row === undefined) {
+// Echo information about what you are doing to the console.
+    console.log('Your database appears to be empty. I will initialize it now.');
+// Set a const that will contain your SQL commands to initialize the database.
     const sqlInit = `
         CREATE TABLE accesslog ( 
-            id INTEGER PRIMARY KEY, remoteaddr STRING, remoteuser STRING, time STRING, method STRING, url STRING, protocol STRING, httpversion STRING, status INTEGER, referer STRING, useragent STRING);
+            id INTEGER PRIMARY KEY, 
+            remoteaddr TEXT,
+            remoteuser TEXT,
+            time INTEGER,
+            method TEXT,
+            url TEXT,
+            protocol TEXT,
+            httpversion TEXT,
+            status INTEGER, 
+            referrer TEXT,
+            useragent TEXT 
+            );
     `
-    db.exec(sqlInit)
+// Execute SQL commands that we just wrote above.
+    logdb.exec(sqlInit);
+} else {
+// Since the database already exists, echo that to the console.
+    console.log('Log Data Base already created.')
 }
-
-module.exports = db;
+// Export all of the above as a module so that we can use it elsewhere.
+module.exports = logdb
