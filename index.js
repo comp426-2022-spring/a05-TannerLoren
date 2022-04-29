@@ -52,3 +52,11 @@ if (args['log'] == true) {
     // Set up the access logging middleware
     app.use(morgan('accesslog', { stream: WRITESTREAM }));
 }
+
+if (args['debug'] == true) {
+    // Endpoint to return all records in accesslog
+    app.get('/app/log/access', (req, res) => {
+        const stmt = db.prepare('SELECT * FROM accesslog').all()
+        res.statusCode = 200;
+        res.json(stmt);
+    });
