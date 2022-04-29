@@ -33,3 +33,5 @@ const server = app.listen(port, () => {
 });
 
 app.use(require('./src/middleware/mymiddleware.js'))
+
+app.use(require('./src/routes/someroutes.js'))
