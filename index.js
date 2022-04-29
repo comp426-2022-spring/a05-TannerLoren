@@ -35,3 +35,12 @@ const server = app.listen(port, () => {
 app.use(require('./src/middleware/mymiddleware.js'))
 
 app.use(require('./src/routes/someroutes.js'))
+
+app.get('/app/', (req, res) => { // Define Checkpoint
+    // Respond with status 200
+    res.statusCode = 200;
+    // Respond with status message "OK"
+    res.json({
+        'message': "Your API works! (200)"
+    })
+});
