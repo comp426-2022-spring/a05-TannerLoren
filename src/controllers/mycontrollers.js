@@ -102,4 +102,9 @@
    * 
    * Export all of your named functions
   */
-  module.exports = { coinFlip, coinFlips, countFlips, flipACoin };
+   module.exports = {
+    coinFlip: coinFlip,
+    coinFlips: coinFlips,
+    countFlips: countFlips,
+    flipACoin: flipACoin
+};

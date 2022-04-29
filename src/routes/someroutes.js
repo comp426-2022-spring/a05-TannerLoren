@@ -1,54 +1,49 @@
-// Route (endpoint) definitions go in this directory
-const express = require('express')
+const config = require("../config/general.config.js");
+const flipGame = require("../controllers/mycontrollers.js")
+const express = config.express
+const app = config.app
+app.use(express.json());
 
-// Set up cors middleware on all endpoints
-const someroutes = require("express").Router();
+//const gameRoutes = config.express.Router();
 
-// Get coin functions
-const coins = require('../controllers/mycontrollers.js')
+const root = app.get('/app', (req, res) => {
+    res.type('text/plain')
+    res.status(200).end(`200 OK`)
+}
+)
+const oneFlip = app.get('/app/flip', (req, res) => {
+    var flip = flipGame.coinFlip()
+    res.type('application/json')
+    res.status(200).json({'flip': flip})
+})
 
-someroutes.route('/app/flip/').get(function (req, res, next) { // Flip a coin and return the result
-    // Respond with status 200
-    res.statusCode = 200;
-    // Flip a coin using the coinFlip() function
-    const result = coins.coinFlip();
-    // Send json response based of heads or tails from resulting coin flip
-    res.json({"flip": result});
-});
+const manyFlips = app.get('/app/flips/:number', (req,res) => {
+    var manyFlip = flipGame.coinFlips(req.params.number)
+    var sumFlip = flipGame.countFlips(manyFlip)
+    res.type('application/json')
+    res.status(200).json({'raw': manyFlip, 'summary': sumFlip})
+})
 
-someroutes.route('/app/flips/:number').get(function (req, res, next) { // Flip a coin multiple times and return the results
-    // Respond with status 200
-    res.statusCode = 200;
-    // Set up variable for number of coin flips, array of results, and counted results
-	const flips = req.params.number;
-    const results = coins.coinFlips(flips);
-    const counted = coins.countFlips(coins.coinFlips(flips));
-	// Flip coin "flips" number of times using the coinFlips function, send json response of results
-    res.json({"raw":results, "summary":counted});
-});
 
-someroutes.route('/app/flips/coins/').post(function (req, res, next) {
-    // Respond with status 200
-    res.statusCode = 200;
-    // Set up variable for number of coin flips and counted results, then send json response
-    var results = coins.coinFlips(req.body.number)
-    var counted = coins.countFlips(results)
-    res.json({"raw":results, "summary":counted});
-});
+const headGuess = app.get('/app/flip/call/:guess(heads|tails)', (req, res) => {
+  var flipResult = flipGame.flipACoin(req.params.guess)
+  var call = flipResult.call
+  var flip = flipResult.flip
+  var result = flipResult.result
+  res.type('application/json')
+  res.status(200).json({'call': call, 'flip': flip, 'result': result})
+})
 
-someroutes.route('/app/flip/call/heads').get(function (req, res, next) {  // Flip a coin, call heads, compare result
-    // Respond with status 200
-    res.statusCode = 200;
-    // Use flipACoin function for heads, send json response of results
-    const result = coins.flipACoin("heads")
-    res.json(result);
-});
 
-someroutes.route('/app/flip/call/tails').get(function (req, res, next) {  // Flip a coin, call tails, compare result
-    // Respond with status 200
-    res.statusCode = 200;
-    // Use flipACoin function for tails, send json response of results
-    const result = coins.flipACoin("tails")
-    res.json(result);
-});
-module.exports = someroutes;
+const bodyFlips = app.post('/app/flip/coins/', (req, res) => {
+  const flips = coinFlips(req.body.number)
+  const count = countFlips(flips)
+  res.status(200).json({"raw":flips,"summary":count})
+})
+
+const bodyCoin = app.post('/app/flip/call/', (req, res) => {
+  const game = flipACoin(req.body.guess)
+  res.status(200).json(game)
+})
+
+module.exports = {root, oneFlip, manyFlips, headGuess, bodyFlips, bodyCoin}

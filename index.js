@@ -1,4 +1,3 @@
-// Place your server entry point code here
 const args = require("minimist")(process.argv.slice(2))
 args['port', 'debug', 'log', 'help'];
 var port = args.port || process.env.PORT || 5555
