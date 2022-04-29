@@ -47,3 +47,8 @@ app.get('/app/', (req, res) => { // Define Checkpoint
 
 if (args['log'] == true) {
     const fs = require('fs');
+
+    const WRITESTREAM = fs.createWriteStream('access.log', { flags: 'a' });
+    // Set up the access logging middleware
+    app.use(morgan('accesslog', { stream: WRITESTREAM }));
+}
