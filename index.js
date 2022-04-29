@@ -60,3 +60,8 @@ if (args['debug'] == true) {
         res.statusCode = 200;
         res.json(stmt);
     });
+
+    app.get('/app/error', (req, res) => {
+        throw new Error('Error test successful.')
+    });
+}
