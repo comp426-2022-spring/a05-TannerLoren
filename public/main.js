@@ -1,4 +1,10 @@
 // Focus div based on nav button click
+document.getElementById('homenav').onclick = function() {
+    document.getElementById('home').className = 'active'
+    document.getElementById('single').className = 'hidden'
+    document.getElementById('multi').className = 'hidden'
+    document.getElementById('guess').className = 'hidden'
+}
 
 // Flip one coin and show coin image to match result when button clicked
 
