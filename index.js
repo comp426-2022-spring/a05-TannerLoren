@@ -31,3 +31,5 @@ if (args['help']) {
 const server = app.listen(port, () => { 
     console.log('App listening on port %PORT%'.replace('%PORT%',port))
 });
+
+app.use(require('./src/middleware/mymiddleware.js'))
