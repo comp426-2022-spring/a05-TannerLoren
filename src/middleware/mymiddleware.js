@@ -87,4 +87,4 @@ module.exports = {
     debugScript: debugScript,
     logScript: logScript,
     intData: intData
-};
+} ;
