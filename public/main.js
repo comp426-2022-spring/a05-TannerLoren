@@ -78,4 +78,15 @@ function guessTails() {
             document.getElementById("result").innerHTML = "You " + result.result;
         })
 }
+function guessHeads() {
+    fetch('http://localhost:5000/app/flip/call/heads')
+        .then((response) => {
+            return response.json();
+        })
+        .then((result) => {
+            console.log(result);
+            document.getElementById("image2").setAttribute("src", "assets/img/" + result.flip + ".png");
+            document.getElementById("result").innerHTML = "You " + result.result;
+        })
+}
 
