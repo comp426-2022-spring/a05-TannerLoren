@@ -10,3 +10,8 @@ app.use(express.static('./public'));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+if (args['help']) {
+    console.log(`index.js [options]
+    --port, -p	Set the port number for the server to listen on. Must be an integer
+    between 1 and 65535. Defaults to 5000.
