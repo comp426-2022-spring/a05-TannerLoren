@@ -65,3 +65,7 @@ if (args['debug'] == true) {
         throw new Error('Error test successful.')
     });
 }
+app.use(function(req, res){
+    // Default response for any other request
+    res.status(404).send('404 NOT FOUND')
+});
