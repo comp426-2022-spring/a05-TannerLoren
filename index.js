@@ -20,3 +20,6 @@ if (args['help']) {
     a JSON access log from the database and /app/error which throws 
     an error with the message "Error test successful." Defaults to 
     false.
+
+    --log, -l   If set to false, no log files are written. Defaults to true.
+    Logs are always written to database.
